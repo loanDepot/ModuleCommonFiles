@@ -16,16 +16,15 @@ Describe "All commands pass PSScriptAnalyzer rules" -Tag 'Build' {
             {
                 foreach ($rule in $results)
                 {
-                    It $rule.RuleName {
-                        $message = "{0} Line {1}: {2}" -f $rule.Severity, $rule.Line, $rule.Message
-                        $message | Should Be ""
+                    It ("{0}:{1} on line {2}" -f $rule.Severity,$rule.RuleName,$rule.Line) {
+                        $rule.Message | Should -Be "" -Because $rule.Message
                     }
                 }
             }
             else
             {
                 It "Should not fail any rules" {
-                    $results | Should BeNullOrEmpty
+                    $results | Should -BeNullOrEmpty
                 }
             }
         }
@@ -39,7 +38,7 @@ Describe "Public commands have Pester tests" -Tag 'Build' {
     {
         $file = Get-ChildItem -Path "$ModuleRoot\Tests" -Include "$command.Tests.ps1" -Recurse
         It "Should have a Pester test for [$command]" {
-            $file.FullName | Should Not BeNullOrEmpty
+            $file.FullName | Should -Not -BeNullOrEmpty
         }
     }
 }
